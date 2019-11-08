@@ -272,6 +272,42 @@ int medio(int *tabla, int ip, int iu, int *pos) {
   return 0;
 }
 
+int medio_avg(int *tabla, int ip, int iu, int *pos) {
+  if(tabla == NULL || ip < 0 || iu < ip || pos == NULL) return ERR;
+  *pos = (ip + iu)/2;
+  return 0;
+}
+
+int medio_stat(int *tabla, int ip, int iu, int *pos) {
+  if(tabla == NULL || ip < 0 || iu < ip || pos == NULL) return ERR;
+  int im = (ip + iu)/2;
+
+  if(tabla[ip] < tabla[iu]) {
+    if(tabla[ip] > tabla[im]) {
+      *pos = ip;
+      return 2;
+    }
+    if(tabla[im] > tabla[iu]) {
+      *pos = iu;
+      return 3;
+    }
+    *pos = im;
+    return 3;
+  }
+
+  if(tabla[iu] > tabla[im]) {
+    *pos = iu;
+    return 2;
+  }
+  if(tabla[im] > tabla[ip]) {
+    *pos = ip;
+    return 3;
+  }
+
+  *pos = im;
+  return 3;
+}
+
 
 
 

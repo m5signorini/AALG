@@ -62,6 +62,7 @@ int main(int argc, char** argv)
       strcpy(nombre, argv[++i]);
     } else {
       fprintf(stderr, "Parametro %s es incorrecto\n", argv[i]);
+      return EXIT_FAILURE;
     }
   }
 

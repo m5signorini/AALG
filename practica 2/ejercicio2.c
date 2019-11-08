@@ -46,11 +46,12 @@ int main(int argc, char** argv)
       num = atoi(argv[++i]);
     } else {
       fprintf(stderr, "Parametro %s es incorrecto\n", argv[i]);
+      return EXIT_FAILURE;
     }
   }
 
   /* imprimimos el resultado */
-  for(j = 0; j < num; j++) { 
+  for(j = 0; j < num; j++) {
     perm = genera_perm(tamanio);
     if (perm == NULL) { /* error */
       printf("Error: No hay memoria\n");
@@ -66,4 +67,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-

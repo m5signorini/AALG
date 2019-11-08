@@ -46,6 +46,7 @@ int main(int argc, char** argv)
       n_perms = atoi(argv[++i]);
     } else {
       fprintf(stderr, "Parametro %s es incorrecto\n", argv[i]);
+      return EXIT_FAILURE;
     }
   }
 
@@ -68,4 +69,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-

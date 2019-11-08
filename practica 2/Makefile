@@ -50,17 +50,17 @@ MergeSort_test:
 MergeSort_analysis:
 	@echo Ejecutando MergeSort recopilando datos
 	@valgrind --leak-check=full --show-leak-kinds=all \
-	./MergeSort_2 -num_min 1 -num_max 1000 -incr 10 -numP 1000 -fichSalida MergeSort-1,1000,10,1000.log
+	./MergeSort_2 -num_min 1000 -num_max 10000 -incr 500 -numP 1000 -fichSalida MergeSort-1000,10000,500,1000.log
 
 QuickSort_test:
-		@echo Ejecutando MergeSort
+		@echo Ejecutando QuickSort
 		@valgrind --leak-check=full --show-leak-kinds=all \
 		./QuickSort_1 -tamanio 20
 
 QuickSort_analysis:
-		@echo Ejecutando MergeSort recopilando datos
+		@echo Ejecutando QuickSort recopilando datos
 		@valgrind --leak-check=full --show-leak-kinds=all \
-		./QuickSort_2 -num_min 1000 -num_max 10000 -incr 500 -numP 1000 -fichSalida QuickSort-1000,10000,500,1000.log
+		./QuickSort_2  -num_min 1000 -num_max 2000 -incr 100 -numP 200 -fichSalida QuickSort-1000,2000,100,200.log
 
 ##################################
 ##################################

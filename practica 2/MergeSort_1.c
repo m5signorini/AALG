@@ -39,6 +39,7 @@ int main(int argc, char** argv)
       tamano = atoi(argv[++i]);
     } else {
       fprintf(stderr, "Parametro %s es incorrecto\n", argv[i]);
+      return EXIT_FAILURE;
     }
   }
 

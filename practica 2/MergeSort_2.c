@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     fprintf(stderr, "\t\t -numP <int> -fichSalida <string> \n");
     fprintf(stderr, "Donde:\n");
     fprintf(stderr, "-num_min: numero minimo de elementos de la tabla\n");
-    fprintf(stderr, "-num_max: numero minimo de elementos de la tabla\n");
+    fprintf(stderr, "-num_max: numero maximo de elementos de la tabla\n");
     fprintf(stderr, "-incr: incremento\n");
     fprintf(stderr, "-numP: Introduce el numero de permutaciones a promediar\n");
     fprintf(stderr, "-fichSalida: Nombre del fichero de salida\n");
@@ -62,6 +62,7 @@ int main(int argc, char** argv)
       strcpy(nombre, argv[++i]);
     } else {
       fprintf(stderr, "Parametro %s es incorrecto\n", argv[i]);
+      return EXIT_FAILURE;
     }
   }
 

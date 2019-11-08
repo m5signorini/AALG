@@ -32,6 +32,8 @@ int merge(int* tabla, int ip, int iu, int imedio);
 
 int QuickSort(int* tabla, int ip, int iu);
 int partir(int* tabla, int ip, int iu,int *pos);
-int medio(int *tabla, int ip, int iu,int *pos); 
+int medio(int *tabla, int ip, int iu,int *pos);
+int medio_avg(int *tabla, int ip, int iu, int *pos);
+int medio_stat(int *tabla, int ip, int iu, int *pos);
 
 #endif
