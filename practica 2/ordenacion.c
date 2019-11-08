@@ -244,7 +244,7 @@ int partir(int* tabla, int ip, int iu, int *pos) {
   int i = 0;
 
   /* pos es la posicion del pivote */
-  obs = medio(tabla, ip, iu, pos);
+  obs = medio_stat(tabla, ip, iu, pos);
   if(obs == ERR) return ERR;
   total += obs;
 

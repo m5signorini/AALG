@@ -60,7 +60,7 @@ QuickSort_test:
 QuickSort_analysis:
 		@echo Ejecutando QuickSort recopilando datos
 		@valgrind --leak-check=full --show-leak-kinds=all \
-		./QuickSort_2  -num_min 1000 -num_max 2000 -incr 100 -numP 200 -fichSalida QuickSort-1000,2000,100,200.log
+		./QuickSort_2  -num_min 1000 -num_max 10000 -incr 500 -numP 1000 -fichSalida QuickSort-1000,10000,500,1000-mediaStat.log
 
 ##################################
 ##################################
