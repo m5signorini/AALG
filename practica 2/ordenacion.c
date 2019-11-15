@@ -239,14 +239,12 @@ int partir(int* tabla, int ip, int iu, int *pos) {
   if(tabla == NULL || ip < 0 || iu < ip || pos==NULL) return ERR;
 
   int obs = 0;
-  int total = 0;
   int k = 0;
   int i = 0;
 
   /* pos es la posicion del pivote */
   obs = medio_stat(tabla, ip, iu, pos);
   if(obs == ERR) return ERR;
-  total += obs;
 
   /* ordenar relativamente al pivote pos */
   k = tabla[*pos];
@@ -256,14 +254,14 @@ int partir(int* tabla, int ip, int iu, int *pos) {
   for(i = ip+1; i <= iu; i++) {
     /* pos va representando la posicion final del pivote */
     /* aumenta de 1 en 1 por cada elemento menor (izq) */
-    total++;
+    obs++;
     if(tabla[i] < k) {
       *pos += 1;
       SWAP(tabla[i], tabla[*pos]);
     }
   }
   SWAP(tabla[ip], tabla[*pos]);
-  return total;
+  return obs;
 }
 
 int medio(int *tabla, int ip, int iu, int *pos) {
