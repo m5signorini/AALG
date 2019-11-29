@@ -63,6 +63,7 @@ short tiempo_medio_ordenacion(pfunc_ordena metodo,
       free(tablas[j]);
     }
     free(tablas);
+    return ERR;
   }
 
   for(j=0; j<n_perms; j++) {
@@ -88,6 +89,7 @@ short tiempo_medio_ordenacion(pfunc_ordena metodo,
       free(tablas[j]);
     }
     free(tablas);
+    return ERR;
   }
 
   ptiempo->tiempo = (double)(t2 - t1)/n_perms;
@@ -195,4 +197,98 @@ short guarda_tabla_tiempos(char* fichero, PTIEMPO tiempo, int n_tiempos)
   fclose(pf);
 
   return OK;
+}
+
+
+short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves generador,
+                              int orden,
+                              int N,
+                              int n_veces,
+                              PTIEMPO ptiempo){
+  if(metodo == NULL || generador == NULL  || (orden != NO_ORDENADO && orden != ORDENADO) || n_veces < 1 || ptiempo == NULL || N < 1){
+    return ERR;
+  }
+
+  clock_t t1;
+  clock_t t2;
+  int * perm = NULL;
+  int * ppos = NULL;
+  PDICC pdicc = NULL;
+  int* claves = NULL;
+  int j = 0;
+  int obs_total = 0;
+  int obs_min = INT_MAX;
+  int obs_max = -1;
+  int obs = 0;
+
+  pdicc = ini_diccionario(N, orden);
+  if (pdicc == NULL){
+    return ERR;
+  }
+
+  perm = genera_perm(N);
+  if (perm == NULL){
+    libera_diccionario(pdicc);
+    return ERR;
+  }
+  if (insercion_masiva_diccionario(pdicc,perm, N) == ERR){
+    libera_diccionario(pdicc);
+    free(perm);
+    return ERR;
+  }
+
+  claves = (int*)malloc(N*n_veces*sizeof(int));
+  if(claves == NULL){
+    libera_diccionario(pdicc);
+    free(perm);
+    return ERR;
+  }
+
+  generador(claves,N,(N*n_veces));
+
+  t1=clock();
+  if(t1 == ERR) {
+    libera_diccionario(pdicc);
+    free(perm);
+    free(claves);
+    return ERR;
+  }
+
+  for(j = 0; j < (N*n_veces); j++){
+    obs = busca_diccionario(pdicc, claves[j], ppos , metodo);
+    if(obs = ERR){
+      libera_diccionario(pdicc);
+      free(perm);
+      free(claves);
+      return ERR;
+    }
+
+    if(obs < obs_min) {
+      obs_min = obs;
+    }
+    else if(obs > obs_max) {
+      obs_max = obs;
+    }
+    obs_total += obs;
+  }
+
+ t2=clock();
+ if(t2 == ERR) {
+   libera_diccionario(pdicc);
+   free(perm);
+   free(claves);
+   return ERR;
+ }
+
+ ptiempo->tiempo = (double)(t2 - t1)/N*n_veces;
+ ptiempo->medio_ob = ((double)obs_total)/N*n_veces;
+ ptiempo->min_ob = obs_min;
+ ptiempo->max_ob = obs_max;
+
+ libera_diccionario(pdicc);
+ free(perm);
+ free(claves);
+
+ return OK;
+
 }
