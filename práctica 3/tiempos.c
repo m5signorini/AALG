@@ -199,7 +199,6 @@ short guarda_tabla_tiempos(char* fichero, PTIEMPO tiempo, int n_tiempos)
   return OK;
 }
 
-
 short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves generador,
                               int orden,
                               int N,
@@ -212,7 +211,7 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
   clock_t t1;
   clock_t t2;
   int * perm = NULL;
-  int * ppos = NULL;
+  int pos = 0;
   PDICC pdicc = NULL;
   int* claves = NULL;
   int j = 0;
@@ -220,6 +219,10 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
   int obs_min = INT_MAX;
   int obs_max = -1;
   int obs = 0;
+  int n_claves = N*n_veces;
+
+  ptiempo->N = N;
+  ptiempo->n_elems = n_claves;
 
   pdicc = ini_diccionario(N, orden);
   if (pdicc == NULL){
@@ -237,28 +240,27 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
     return ERR;
   }
 
-  claves = (int*)malloc(N*n_veces*sizeof(int));
+  free(perm);
+
+  claves = (int*)malloc(n_claves*sizeof(int));
   if(claves == NULL){
     libera_diccionario(pdicc);
-    free(perm);
     return ERR;
   }
 
-  generador(claves,N,(N*n_veces));
+  generador(claves, n_claves, N);
 
   t1=clock();
   if(t1 == ERR) {
     libera_diccionario(pdicc);
-    free(perm);
     free(claves);
     return ERR;
   }
 
-  for(j = 0; j < (N*n_veces); j++){
-    obs = busca_diccionario(pdicc, claves[j], ppos , metodo);
-    if(obs = ERR){
+  for(j = 0; j < n_claves; j++){
+    obs = busca_diccionario(pdicc, claves[j], &pos , metodo);
+    if(obs == ERR){
       libera_diccionario(pdicc);
-      free(perm);
       free(claves);
       return ERR;
     }
@@ -275,20 +277,51 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
  t2=clock();
  if(t2 == ERR) {
    libera_diccionario(pdicc);
-   free(perm);
    free(claves);
    return ERR;
  }
 
- ptiempo->tiempo = (double)(t2 - t1)/N*n_veces;
- ptiempo->medio_ob = ((double)obs_total)/N*n_veces;
+ ptiempo->tiempo = (double)(t2 - t1)/n_claves;
+ ptiempo->medio_ob = ((double)obs_total)/n_claves;
  ptiempo->min_ob = obs_min;
  ptiempo->max_ob = obs_max;
 
  libera_diccionario(pdicc);
- free(perm);
  free(claves);
 
  return OK;
 
+}
+
+short genera_tiempos_busqueda(pfunc_busqueda metodo, pfunc_generador_claves generador,
+                                int orden, char* fichero,
+                                int num_min, int num_max,
+                                int incr, int n_veces){
+  if(metodo == NULL || generador == NULL  || (orden != NO_ORDENADO && orden != ORDENADO) || n_veces < 1 || fichero == NULL || num_min < 0 || num_max < num_min || incr < 1){
+    return ERR;
+  }
+  int size = (num_max - num_min)/incr + 1;  /* Numero de tiempos a medir*/
+  int j = 0;
+  int N = num_min;
+  PTIEMPO tiempos = NULL;
+
+  tiempos = (PTIEMPO)malloc(size*sizeof(TIEMPO));
+  if (tiempos == NULL) return ERR;
+
+  for(j=0; j<size; j++) {
+  /* Guardamos en tiempos[j] el tiempo medio para ordenar n_perms de tam N */
+    if(tiempo_medio_busqueda(metodo, generador, orden, N ,n_veces, &tiempos[j]) == ERR) {
+      free(tiempos);
+      return ERR;
+    }
+    N += incr;
+  }
+
+  if(guarda_tabla_tiempos(fichero, tiempos, size)==ERR) {
+    free(tiempos);
+    return ERR;
+  }
+
+  free(tiempos);
+  return OK;
 }

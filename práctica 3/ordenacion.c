@@ -45,13 +45,13 @@ int InsertSort(int* tabla, int ip, int iu)
 
   while(j <= iu) {
     /*i: ultimo indice ordenado*/
-    swap = tabla[j];
     i = j-1;
-    while((i >= ip) && (++obs) && (tabla[i] > swap)) {
+    while((i >= ip) && (++obs) && (tabla[i] > tabla[i+1])) {
+      swap = tabla[i+1];
       tabla[i+1] = tabla[i];
+      tabla[i] = swap;
       i--;
     }
-    tabla[i+1] = swap;
     j++;
   }
 
@@ -86,13 +86,13 @@ int InsertSortInv(int* tabla, int ip, int iu)
 
   while(j <= iu) {
     /*i: ultimo indice ordenado*/
-    swap = tabla[j];
     i = j-1;
-    while((i >= ip) && (++obs) && (tabla[i] < swap)) {
+    while((i >= ip) && (++obs) && (tabla[i] < tabla[i+1])) {
+      swap = tabla[i+1];
       tabla[i+1] = tabla[i];
+      tabla[i] = swap;
       i--;
     }
-    tabla[i+1] = swap;
     j++;
   }
 
@@ -141,6 +141,24 @@ int MergeSort(int* tabla, int ip, int iu)
   return total;
 }
 
+/***************************************************/
+/* Funcion: merge    Fecha: 27-09-20               */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion auxiliar de MergeSort cuya función es   */
+/* ordenar y combinar las subtablas que MergeSort  */
+/* le va pasando de menor a mayor                  */
+/*                                                 */
+/* Entrada:                                        */
+/* tabla: Puntero a la subtabla a ordenar          */
+/* ip: Numero que indica el primer indice          */
+/* iu: Numero que indica el ultimo indice          */
+/* imedio: Numero que indica el indice intermedio  */
+/* Salida:                                         */
+/* int: devuelve ERR en caso de error o el         */
+/* numero de veces que se ha ejecutado la OB       */
+/*                                                 */
+/***************************************************/
 int merge(int* tabla, int ip, int iu, int imedio)
 {
   if(tabla == NULL || ip < 0 || iu < ip || imedio < ip || imedio > iu) return ERR;
@@ -190,7 +208,7 @@ int merge(int* tabla, int ip, int iu, int imedio)
 }
 
 /***************************************************/
-/* Funcion: QuickSort    Fecha: 27-09-20           */
+/* Funcion: QuickSort    Fecha: 27-09-20          */
 /* Autores:César Ramírez & Martín Sánchez          */
 /*                                                 */
 /* Funcion que ordena una tabla de menor a mayor   */
@@ -234,16 +252,34 @@ int QuickSort(int* tabla, int ip, int iu) {
   return total;
 }
 
-
+/***************************************************/
+/* Funcion: partir    Fecha: 27-09-20              */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion auxiliar de QuickSort cuya función es   */
+/* ordenar relativamente los elementos de la tabla */
+/* con respecto a un pivote elegido gracias a otra */
+/*  función encargada de ello.                     */
+/* Entrada:                                        */
+/* tabla: Puntero a la tabla a ordenar             */
+/* ip: Numero que indica el primer indice          */
+/* iu: Numero que indica el ultimo indice          */
+/* * pos: indica la posición de la tabla en la que */
+/* se encuentra el pivote elegido                  */
+/* Salida:                                         */
+/* int: devuelve ERR en caso de error o el         */
+/* numero de veces que se ha ejecutado la OB       */
+/*                                                 */
+/***************************************************/
 int partir(int* tabla, int ip, int iu, int *pos) {
-  if(tabla == NULL || ip < 0 || iu < ip || pos == NULL) return ERR;
+  if(tabla == NULL || ip < 0 || iu < ip || pos==NULL) return ERR;
 
   int obs = 0;
   int k = 0;
   int i = 0;
 
   /* pos es la posicion del pivote */
-  obs = medio(tabla, ip, iu, pos);
+  obs = medio_stat(tabla, ip, iu, pos);
   if(obs == ERR) return ERR;
 
   /* ordenar relativamente al pivote pos */
@@ -261,13 +297,113 @@ int partir(int* tabla, int ip, int iu, int *pos) {
     }
   }
   SWAP(tabla[ip], tabla[*pos]);
-  return total;
+  return obs;
 }
 
+/***************************************************/
+/* Funcion: medio    Fecha: 27-09-20              */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion auxiliar de QuickSort cuya función es   */
+/* elegir el pivote en torno al que partir         */
+/* ordenará los elementos de la tabla.             */
+/* En concreto, esta función elige siempre         */
+/* como pivote el primer elemento de la tabla      */
+/* Entrada:                                        */
+/* tabla: Puntero a la tabla a ordenar             */
+/* ip: Numero que indica el primer indice          */
+/* iu: Numero que indica el ultimo indice          */
+/* * pos: indica la posición de la tabla en la que */
+/* se encuentra el pivote elegido                  */
+/* Salida:                                         */
+/* int: devuelve ERR en caso de error o el         */
+/* 0 en caso de éxito                              */
+/*                                                 */
+/***************************************************/
 int medio(int *tabla, int ip, int iu, int *pos) {
   if(tabla == NULL || ip < 0 || iu < ip || pos == NULL) return ERR;
   *pos = ip;
   return 0;
+}
+
+/***************************************************/
+/* Funcion: medio_avg    Fecha: 27-09-20           */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion auxiliar de QuickSort cuya función es   */
+/* elegir el pivote en torno al que partir         */
+/* ordenará los elementos de la tabla.             */
+/* En concreto, esta función elige siempre         */
+/* como pivote el elemento que se encuentra en     */
+/* en la posición intermedia de la tabla.          */
+/* Entrada:                                        */
+/* tabla: Puntero a la tabla a ordenar             */
+/* ip: Numero que indica el primer indice          */
+/* iu: Numero que indica el ultimo indice          */
+/* * pos: indica la posición de la tabla en la que */
+/* se encuentra el pivote elegido                  */
+/* Salida:                                         */
+/* int: devuelve ERR en caso de error o el         */
+/* 0 en caso de éxito                              */
+/*                                                 */
+/***************************************************/
+int medio_avg(int *tabla, int ip, int iu, int *pos) {
+  if(tabla == NULL || ip < 0 || iu < ip || pos == NULL) return ERR;
+  *pos = (ip + iu)/2;
+  return 0;
+}
+
+/***************************************************/
+/* Funcion: medio_stat    Fecha: 27-09-20          */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion auxiliar de QuickSort cuya función es   */
+/* elegir el pivote en torno al que partir         */
+/* ordenará los elementos de la tabla.             */
+/* En concreto, esta función compara               */
+/* el valor de los elementos que se encuentran     */
+/* en la primera, intermedia y última posición     */
+/* y elige como pivote el elemento de los tres     */
+/* cuyo valor sea el intermedio                    */
+/* Entrada:                                        */
+/* tabla: Puntero a la tabla a ordenar             */
+/* ip: Numero que indica el primer indice          */
+/* iu: Numero que indica el ultimo indice          */
+/* * pos: indica la posición de la tabla en la que */
+/* se encuentra el pivote elegido                  */
+/* Salida:                                         */
+/* int: devuelve ERR en caso de error o el         */
+/* numero de veces que se ha ejecutado la OB       */
+/*                                                 */
+/***************************************************/
+int medio_stat(int *tabla, int ip, int iu, int *pos) {
+  if(tabla == NULL || ip < 0 || iu < ip || pos == NULL) return ERR;
+  int im = (ip + iu)/2;
+
+  if(tabla[ip] < tabla[iu]) {
+    if(tabla[ip] > tabla[im]) {
+      *pos = ip;
+      return 2;
+    }
+    if(tabla[im] > tabla[iu]) {
+      *pos = iu;
+      return 3;
+    }
+    *pos = im;
+    return 3;
+  }
+
+  if(tabla[iu] > tabla[im]) {
+    *pos = iu;
+    return 2;
+  }
+  if(tabla[im] > tabla[ip]) {
+    *pos = ip;
+    return 3;
+  }
+
+  *pos = im;
+  return 3;
 }
 
 

@@ -27,8 +27,8 @@
 
 /* definiciones de tipos */
 typedef struct diccionario {
-  int tamanio; /* tamano de la tabla */
-  int n_datos; /* numero de datos en la tabla */
+  int tamanio; /* tamano de la tabla (lo que cabe)*/
+  int n_datos; /* numero de datos en la tabla (lo que hay)*/
   char orden;  /* tabla ordenada o desordenada */
   int *tabla;  /* tabla de datos */
 } DICC, *PDICC;
@@ -44,7 +44,7 @@ int insercion_masiva_diccionario (PDICC pdicc,int *claves, int n_claves);
 int busca_diccionario(PDICC pdicc, int clave, int *ppos, pfunc_busqueda metodo);
 
 
-/* Funciones de busqueda del TAD Diccionario */
+/* Funcoiones de busqueda del TAD Diccionario */
 int bbin(int *tabla,int P,int U,int clave,int *ppos);
 int blin(int *tabla,int P,int U,int clave,int *ppos);
 int blin_auto(int *tabla,int P,int U,int clave,int *ppos);

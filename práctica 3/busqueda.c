@@ -10,9 +10,13 @@
  */
 
 #include "busqueda.h"
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
+#ifndef SWAP
+  #define SWAP(X,Y) {int sw = (X); (X) = (Y); (Y) = sw;}
+#endif
 
 /**
  *  Funciones de geracion de claves
@@ -46,6 +50,9 @@ void generador_claves_uniforme(int *claves, int n_claves, int max)
  *               que los mas grandes. El valor 1 tiene una probabilidad del 50%,
  *               el dos del 17%, el tres el 9%, etc.
  */
+
+
+ /*Solo para Bbin auto*/
 void generador_claves_potencial(int *claves, int n_claves, int max)
 {
   int i;
@@ -59,67 +66,80 @@ void generador_claves_potencial(int *claves, int n_claves, int max)
 
 PDICC ini_diccionario (int tamanio, char orden)
 {
-	if(tamanio <= 0 || (orden != ORDENADO && orden != NO_ORDENADO)) return NULL;
-
-  PDICC dic = NULL;
-
-  dic = (PDICC)malloc(sizeof(DICC));
-  if(dic == NULL) return NULL;
-
-  dic->tabla = (int*)malloc(tamanio*sizeof(int));
-  if(dic->tabla == NULL) {
-    free(dic);
+  if(tamanio <= 0 || (orden != ORDENADO && orden != NO_ORDENADO)) {
     return NULL;
   }
 
-  dic->n_datos = 0;
-  dic->tamanio = tamanio;
-  dic->orden = orden;
-  return dic;
+	PDICC dicc = NULL;
+  int * tabla = NULL;
+  dicc = (PDICC)malloc(sizeof(DICC));
+  if (dicc == NULL){
+    return NULL;
+  }
+
+  tabla = (int*)malloc(tamanio*sizeof(int));
+  if (tabla == NULL){
+    free(dicc);
+    return NULL;
+  }
+
+  dicc->tabla = tabla;
+  dicc->tamanio = tamanio;
+  dicc->orden = orden;
+  dicc->n_datos = 0;
+
+  return dicc;
 }
 
 void libera_diccionario(PDICC pdicc)
 {
-	if(pdicc == NULL) return;
+	if (pdicc == NULL){
+    return;
+  }
+
   free(pdicc->tabla);
   free(pdicc);
-  return;
 }
 
+/* comprobar si n_datos < tamanio*/
+/* ver si es ORDENADO o NO_ORDENADO*/
+/* Si NO_ORDENADO meter y ya, sino hacer una pasada de InsertSort*/
 int inserta_diccionario(PDICC pdicc, int clave)
 {
-	if(pdicc == NULL || pdicc->tamanio <= pdicc->n_datos) return ERR;
-
-  int i = 0;
-
-  if(pdicc->orden == ORDENADO) {
-    i = pdicc->ndatos - 1;
-    while(i >= 0 && pdicc->tabla[i] > clave) {
-      pdicc->tabla[i+1] = pdicc->tabla[i];
-      i--;
-    }
-    pdicc->tabla[i+1] = clave;
+  int i;
+	if (pdicc == NULL || (pdicc->orden != ORDENADO && pdicc->orden != NO_ORDENADO) || pdicc->tamanio < (pdicc->n_datos + 1)){
+    return ERR;
   }
-  else {
+  if (pdicc->orden == NO_ORDENADO){
     pdicc->tabla[pdicc->n_datos] = clave;
+    pdicc->n_datos++;
+
+    return OK;
   }
 
-  pdicc->ndatos += 1;
+  i = pdicc->n_datos - 1;
+  while (i >= 0 && pdicc->tabla[i] > clave){
+    pdicc->tabla[i+1] = pdicc->tabla[i];
+    i--;
+  }
+  pdicc->tabla[i+1] = clave;
+  pdicc->n_datos++;
 
   return OK;
 }
 
-int insercion_masiva_diccionario (PDICC pdicc, int* claves, int n_claves)
+int insercion_masiva_diccionario (PDICC pdicc,int *claves, int n_claves)
 {
-  if(pdicc == NULL || claves == NULL || n_claves <= 0) return ERR;
-  /* La posibilidad de insertar claves ya se comprueba con inserta_diccionario */
+  int i;
 
-  int i = 0;
-  int stat = OK;
+  if( pdicc == NULL || claves == NULL || n_claves < 1){
+    return ERR;
+  }
 
-  for(i=0; i < n_claves; i++) {
-    stat = inserta_diccionario(pdicc, claves[i]);
-    if(stat == ERR) return ERR;
+  for(i = 0; i < n_claves; i++){
+    if(inserta_diccionario(pdicc, claves[i]) == ERR){
+      return ERR;
+    }
   }
 
   return OK;
@@ -127,36 +147,84 @@ int insercion_masiva_diccionario (PDICC pdicc, int* claves, int n_claves)
 
 int busca_diccionario(PDICC pdicc, int clave, int *ppos, pfunc_busqueda metodo)
 {
-  if(pdicc == NULL || ppos == NULL || metodo == NULL || pdicc->n_datos <= 0) return ERR;
-  /* Metodo devuelve el control de errores pertinente */
-  return metodo(pdicc->tabla, 0, pdicc->n_datos-1, clave, &ppos);
+	if (pdicc == NULL || ppos == NULL || metodo == NULL || pdicc->n_datos <= 0){
+    return ERR;
+  }
+  return metodo(pdicc->tabla, 0, pdicc->n_datos-1, clave, ppos); /* ppos porque metodo ya te lo hace *ppos*/
 }
 
 
 /* Funciones de busqueda del TAD Diccionario */
-int bbin(int* tabla, int P, int U, int clave, int *ppos)
+int bbin(int *tabla,int P,int U, int clave, int *ppos)
 {
-	if(tabla == NULL || P < 0 || P > U || ppos == NULL) return ERR;
+  if (tabla == NULL || U < P || ppos == NULL || clave < 0){
+    return ERR;
+  }
 
+  int m = 0, obs = 0;
+
+  while (P <= U) {
+    obs ++;
+    m = (P + U)/2;
+    if (tabla[m] == clave){
+      *ppos = m;
+      return obs;
+    }
+    else if (clave < tabla[m]){
+      U = m - 1;
+    }
+    else{
+      P = m + 1;
+    }
+  }
+    *ppos = NO_ENCONTRADO;
+    return obs;
 }
 
-int blin(int* tabla, int P, int U, int clave, int *ppos)
-{
-	if(tabla == NULL || P < 0 || P > U || ppos == NULL) return ERR;
 
-  int obs = 0;
-  int i = P;
-  while(i <= U) {
-    obs++;
-    if(tabla[i] == clave) {
+int blin(int *tabla,int P,int U,int clave,int *ppos)
+{
+  if (tabla == NULL || U < P || ppos == NULL || clave < 0){
+    return ERR;
+  }
+
+  int i = P, obs = 0;
+
+  while (i <= U){
+    obs ++;
+    if(tabla[i] == clave){
+      *ppos = i;
       return obs;
     }
     i++;
   }
-  return NO_ENCONTRADO;
+
+  *ppos = NO_ENCONTRADO;
+  return obs;
 }
 
-int blin_auto(int* tabla, int P, int U, int clave, int *ppos)
+/*Igual que blin sin auto pero en esta SWAP(tabla[i], tabla[i-1])*/
+int blin_auto(int *tabla,int P,int U,int clave,int *ppos)
 {
-	/* vuestro codigo */
+  if (tabla == NULL || U < P || ppos == NULL || clave < 0){
+    return ERR;
+  }
+
+  int i = P, obs = 0;
+
+  while (i <= U){
+    obs ++;
+    if(tabla[i] == clave){
+      if(i > P){
+        SWAP(tabla[i], tabla[i-1]);
+        i--;
+      }
+      *ppos = i;
+      return obs;
+    }
+    i++;
+  }
+
+  *ppos = NO_ENCONTRADO;
+  return obs;
 }
