@@ -215,7 +215,7 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
   PDICC pdicc = NULL;
   int* claves = NULL;
   int j = 0;
-  int obs_medio = 0;
+  double obs_medio = 0;
   int obs_min = INT_MAX;
   int obs_max = -1;
   int obs = 0;
