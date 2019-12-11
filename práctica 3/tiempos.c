@@ -215,7 +215,7 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
   PDICC pdicc = NULL;
   int* claves = NULL;
   int j = 0;
-  int obs_total = 0;
+  int obs_medio = 0;
   int obs_min = INT_MAX;
   int obs_max = -1;
   int obs = 0;
@@ -271,7 +271,7 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
     else if(obs > obs_max) {
       obs_max = obs;
     }
-    obs_total += obs;
+    obs_medio += (double)obs/n_claves;
   }
 
  t2=clock();
@@ -282,7 +282,7 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
  }
 
  ptiempo->tiempo = (double)(t2 - t1)/n_claves;
- ptiempo->medio_ob = ((double)obs_total)/n_claves;
+ ptiempo->medio_ob = obs_medio;
  ptiempo->min_ob = obs_min;
  ptiempo->max_ob = obs_max;
 
