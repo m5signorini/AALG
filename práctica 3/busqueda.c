@@ -64,6 +64,20 @@ void generador_claves_potencial(int *claves, int n_claves, int max)
   return;
 }
 
+/***************************************************/
+/* Funcion: ini_diccionario    Fecha: 1-12-19      */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion que inicializa un diccionario de un     */
+/* determinado tamanio                             */
+/*                                                 */
+/* Entrada:                                        */
+/* tamanio: Tamanio de la lista de claves del dicc */
+/* orden: Si están o no ordenadas las claves       */
+/* Salida:                                         */
+/* PDICC: Puntero a un nuevo diccionario           */
+/*                                                 */
+/***************************************************/
 PDICC ini_diccionario (int tamanio, char orden)
 {
   if(tamanio <= 0 || (orden != ORDENADO && orden != NO_ORDENADO)) {
@@ -101,9 +115,19 @@ void libera_diccionario(PDICC pdicc)
   free(pdicc);
 }
 
-/* comprobar si n_datos < tamanio*/
-/* ver si es ORDENADO o NO_ORDENADO*/
-/* Si NO_ORDENADO meter y ya, sino hacer una pasada de InsertSort*/
+/***************************************************/
+/* Funcion: inserta_diccionario    Fecha: 1-12-19  */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion que inserta clave en un diccionario     */
+/*                                                 */
+/* Entrada:                                        */
+/* pdicc: puntero a diccionario                    */
+/* clave: clave a insertar                         */
+/* Salida:                                         */
+/* int: OK o ERROR en caso de que ocurra un error  */
+/*                                                 */
+/***************************************************/
 int inserta_diccionario(PDICC pdicc, int clave)
 {
   int i;
@@ -128,6 +152,20 @@ int inserta_diccionario(PDICC pdicc, int clave)
   return OK;
 }
 
+/***********************************************************/
+/* Funcion: insercion_masiva_diccionario    Fecha: 1-12-19 */
+/* Autores:César Ramírez & Martín Sánchez                  */
+/*                                                         */
+/* Funcion que inserta muchas claves en un diccionario     */
+/*                                                         */
+/* Entrada:                                                */
+/* pdicc: puntero a diccionario                            */
+/* claves: array de claves a insertar                      */
+/* n_claves: tamaño del array de claves                    */
+/* Salida:                                                 */
+/* int: OK o ERROR en caso de que ocurra un error          */
+/*                                                         */
+/***********************************************************/
 int insercion_masiva_diccionario (PDICC pdicc,int *claves, int n_claves)
 {
   int i;
@@ -145,6 +183,21 @@ int insercion_masiva_diccionario (PDICC pdicc,int *claves, int n_claves)
   return OK;
 }
 
+/***************************************************/
+/* Funcion: busca_diccionario    Fecha: 1-12-19    */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion que busca una clave en un diccionario     */
+/*                                                 */
+/* Entrada:                                        */
+/* pdicc: puntero a diccionario                    */
+/* clave: clave a buscar                           */
+/* ppos: salida, posicion de la clave              */
+/* metodo: metodo de busqueda                      */
+/* Salida:                                         */
+/* int: Número de OBS                              */
+/*                                                 */
+/***************************************************/
 int busca_diccionario(PDICC pdicc, int clave, int *ppos, pfunc_busqueda metodo)
 {
 	if (pdicc == NULL || ppos == NULL || metodo == NULL || pdicc->n_datos <= 0){
@@ -155,6 +208,22 @@ int busca_diccionario(PDICC pdicc, int clave, int *ppos, pfunc_busqueda metodo)
 
 
 /* Funciones de busqueda del TAD Diccionario */
+/***************************************************/
+/* Funcion: bbin                 Fecha: 1-12-19    */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion de busqueda binaria                     */
+/*                                                 */
+/* Entrada:                                        */
+/* tabla: lista de claves                          */
+/* clave: clave a buscar                           */
+/* P: posicion cero de la tabla                    */
+/* U: posicion ultima de la tabla                  */
+/* ppos: salida, posicion de la clave              */
+/* Salida:                                         */
+/* int: Número de OBS                              */
+/*                                                 */
+/***************************************************/
 int bbin(int *tabla,int P,int U, int clave, int *ppos)
 {
   if (tabla == NULL || U < P || ppos == NULL || clave < 0){
@@ -181,7 +250,22 @@ int bbin(int *tabla,int P,int U, int clave, int *ppos)
     return obs;
 }
 
-
+/***************************************************/
+/* Funcion: blin                 Fecha: 1-12-19    */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion de busqueda lineal                      */
+/*                                                 */
+/* Entrada:                                        */
+/* tabla: lista de claves                          */
+/* clave: clave a buscar                           */
+/* P: posicion cero de la tabla                    */
+/* U: posicion ultima de la tabla                  */
+/* ppos: salida, posicion de la clave              */
+/* Salida:                                         */
+/* int: Número de OBS                              */
+/*                                                 */
+/***************************************************/
 int blin(int *tabla,int P,int U,int clave,int *ppos)
 {
   if (tabla == NULL || U < P || ppos == NULL || clave < 0){
@@ -204,6 +288,22 @@ int blin(int *tabla,int P,int U,int clave,int *ppos)
 }
 
 /*Igual que blin sin auto pero en esta SWAP(tabla[i], tabla[i-1])*/
+/***************************************************/
+/* Funcion: blin_auto            Fecha: 1-12-19    */
+/* Autores:César Ramírez & Martín Sánchez          */
+/*                                                 */
+/* Funcion de busqueda lineal auto-organizada      */
+/*                                                 */
+/* Entrada:                                        */
+/* tabla: lista de claves                          */
+/* clave: clave a buscar                           */
+/* P: posicion cero de la tabla                    */
+/* U: posicion ultima de la tabla                  */
+/* ppos: salida, posicion de la clave              */
+/* Salida:                                         */
+/* int: Número de OBS                              */
+/*                                                 */
+/***************************************************/
 int blin_auto(int *tabla,int P,int U,int clave,int *ppos)
 {
   if (tabla == NULL || U < P || ppos == NULL || clave < 0){
