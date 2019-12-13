@@ -199,6 +199,24 @@ short guarda_tabla_tiempos(char* fichero, PTIEMPO tiempo, int n_tiempos)
   return OK;
 }
 
+/***************************************************/
+/* Funcion: tiempo_medio_busqueda Fecha:01-12-19            */
+/*                                                          */
+/* Autores:César Ramírez & Martín Sánchez                   */
+/*                                                          */
+/* Funcion encargada de calcular el tiempo y las obs        */
+/*  que un algoritmo de búsqueda tarda y hace para encontrar*/
+/* una clave concreta                                       */
+/* metodo: algoritmo empleado para buscar                   */
+/* generador: generador de calves                           */
+/* orden: diccionario ORDENADO o NO_ORDENADO                */
+/* N: tamaño de la tabla                                    */
+/* n_veces: numero de veces que cada clave será buscada     */
+/*ptiempo: puntero en cuya estructura se guarda toda        */
+/*          la información                                  */
+/* short: ERR en caso de error o OK en caso de exito        */
+/***************************************************/
+
 short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves generador,
                               int orden,
                               int N,
@@ -293,6 +311,25 @@ short tiempo_medio_busqueda(pfunc_busqueda metodo, pfunc_generador_claves genera
 
 }
 
+/***************************************************/
+/* Funcion: genera_tiempos_busqueda Fecha:31-11-19          */
+/*                                                          */
+/* Autores:César Ramírez & Martín Sánchez                   */
+/*                                                          */
+/* Funcion que genera una lista de tiempos en los que       */
+/* se guarda la informacion obtenida de tiempo_medio_busq   */
+/* La lista va generando tiempos para permutaciones de      */
+/* tamanos que van cambiando entre num_min y num_max        */
+/*                                                          */
+/* metodo: funcion que se usara para buscar                 */
+/* fichero: fichero en el que se guardarán los resultados   */
+/* num_min: tamano minimo de las permutaciones a buscar     */
+/* num_max: tamano maximo de las permutaciones a buscar     */
+/* incr: incremento en el tamano de las permutaciones       */
+/* n_perms: numero de permutaciones por tamano para testear */
+/* Salida:                                                  */
+/* short: ERR en caso de error o OK en caso de exito        */
+/***************************************************/
 short genera_tiempos_busqueda(pfunc_busqueda metodo, pfunc_generador_claves generador,
                                 int orden, char* fichero,
                                 int num_min, int num_max,
